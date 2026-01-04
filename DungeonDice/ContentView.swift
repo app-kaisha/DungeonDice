@@ -36,14 +36,15 @@ struct ContentView: View {
                 .frame(height: 150)
             
             Spacer()
-            
-            ForEach(Dice.allCases, id: \.self) { die in
-                Button("\(die.rawValue)-side") {
-                    resultMessage = "You rolled a \(die.roll()) on a \(die.rawValue)-sided dice"
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 102))]) {
+                ForEach(Dice.allCases, id: \.self) { die in
+                    Button("\(die.rawValue)-sided") {
+                        resultMessage = "You rolled a \(die.roll()) on a \(die.rawValue)-sided dice"
+                    }
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.red)
             
         }
         .padding()
