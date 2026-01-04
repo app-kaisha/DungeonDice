@@ -12,8 +12,17 @@ struct ContentView: View {
     
     @State private var resultMessage = ""
     
-    enum Dice: Int, CaseIterable {
+    enum Dice: Int, CaseIterable, Identifiable {
+        
         case four = 4, six = 6, eight = 8, ten = 10, twelve = 12, twenty = 20, hundred = 100
+        
+        var id: Int {
+            rawValue
+        }
+        
+        var description: String {
+            "\(rawValue)-sided"
+        }
         
         func roll() -> Int {
             return Int.random(in: 1...self.rawValue)
@@ -37,8 +46,8 @@ struct ContentView: View {
             
             Spacer()
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 102))]) {
-                ForEach(Dice.allCases, id: \.self) { die in
-                    Button("\(die.rawValue)-sided") {
+                ForEach(Dice.allCases) { die in
+                    Button(die.description) {
                         resultMessage = "You rolled a \(die.roll()) on a \(die.rawValue)-sided dice"
                     }
                 }
