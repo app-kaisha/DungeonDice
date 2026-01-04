@@ -40,27 +40,11 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             VStack {
-                Text("Dungeon Dice")
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .foregroundStyle(.red)
+                titleView
                 
                 Spacer()
                 
-                Text(resultMessage)
-                    .font(.largeTitle)
-                    .fontWeight(.medium)
-                    .multilineTextAlignment(.center)
-                //                .scaleEffect(isDoneAnimating ? 1.0 : 0.6)
-                //                .opacity(isDoneAnimating ? 1.0 : 0.2)
-                    .rotation3DEffect(isDoneAnimating ? .degrees(360) : .degrees(0), axis: (x: 1, y: 0, z: 0))
-                    .frame(height: 150)
-                    .onChange(of: animationTrigger) {
-                        isDoneAnimating = false
-                        withAnimation(.interpolatingSpring(duration: 0.6, bounce: 0.4)) {
-                            isDoneAnimating = true
-                        }
-                    }
+                resultMessageView
                 
                 Spacer()
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: buttonWidth), spacing: spacing)]) {
@@ -86,34 +70,58 @@ struct ContentView: View {
                     .buttonStyle(.borderedProminent)
                     .tint(.red)
                 }
-                
             }
             .padding()
             .onChange(of: geo.size.width) {
-                arrangeGridItems(geo: geo)
+                arrangeGridItems(deviceWidth: geo.size.width)
             }
             .onAppear {
-                arrangeGridItems(geo: geo)
+                arrangeGridItems(deviceWidth: geo.size.width)
             }
         }
-        
     }
     
-    func arrangeGridItems(geo: GeometryProxy) {
-        var screenWidth = geo.size.width - horizontalPadding * 2 // default padding
+    func arrangeGridItems(deviceWidth: CGFloat) {
+        var screenWidth = deviceWidth - horizontalPadding * 2 // default padding
         if Dice.allCases.count > 1 {
             screenWidth += spacing
         }
         // calculate number of buttons per row
         let numberOfButtonsPerRow = Int(screenWidth) / Int(buttonWidth)
         buttonsLeftOver = Dice.allCases.count % numberOfButtonsPerRow
-//        print("numberOfButtonsPerRow: \(numberOfButtonsPerRow)")
-//        print("buttonsLeftOver = \(buttonsLeftOver)")
-
     }
     
+}
+
+
+extension ContentView {
+    private var titleView: some View {
+        Text("Dungeon Dice")
+            .font(.largeTitle)
+            .fontWeight(.black)
+            .foregroundStyle(.red)
+    }
+    
+    private var resultMessageView: some View {
+        Text(resultMessage)
+            .font(.largeTitle)
+            .fontWeight(.medium)
+            .multilineTextAlignment(.center)
+            .rotation3DEffect(isDoneAnimating ? .degrees(360) : .degrees(0), axis: (x: 1, y: 0, z: 0))
+            .frame(height: 150)
+            .onChange(of: animationTrigger) {
+                isDoneAnimating = false
+                withAnimation(.interpolatingSpring(duration: 0.6, bounce: 0.4)) {
+                    isDoneAnimating = true
+                }
+            }
+    }
 }
 
 #Preview {
     ContentView()
 }
+
+
+
+
